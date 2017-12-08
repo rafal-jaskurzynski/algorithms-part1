@@ -39,7 +39,6 @@ public class PercolationStats {
 		}
 
 		return i / Math.pow(size, 2);
-
 	}
 
 	// sample mean of percolation threshold
@@ -62,14 +61,10 @@ public class PercolationStats {
 		return mean() + (CONFIDENCE_95 * stddev() / Math.sqrt(_trials));
 	}
 
-	private void confidence() {
-		System.out.println("[" + confidenceLo() + ";" + confidenceHi() + "]");
-	}
-
 	public static void main(String[] args) {
 
-		if ( args.length == 1)
-		{
+		if (args.length == 1) {
+			System.out.println("reading from stdin: ");
 			int N = StdIn.readInt();
 			System.out.println("size: " + N);
 
@@ -77,38 +72,26 @@ public class PercolationStats {
 			while (!StdIn.isEmpty()) {
 				int p = StdIn.readInt();
 				int q = StdIn.readInt();
-				System.out.println("read: " + p +"," + q);
-
 				percolation.open(p, q);
-				
-
-				if (!percolation.isFull(p, q)) {
-					System.out.println("[error]");
-					break;
-				}
-
+				System.out.println("open: " + p + "," + q + " percolates: " + String.valueOf(percolation.percolates()));
 			}
 			return;
 		}
 
+		// default options
+		int n = 20;
+		int trials = 5;
 		
-		Percolation percolation = new Percolation(6);
-		percolation.open(1, 6);
-//		percolation.printGrid();
-		System.out.println("[isFull][isOpen] :" + String.valueOf( percolation.isFull(1, 6) ) + "," + String.valueOf( percolation.isOpen(1, 6) ));
-		
+		if (args.length == 2) {
+			n = Integer.parseInt(args[0]);
+			trials = Integer.parseInt(args[1]);
+		}
 
-		// int n = 0;
-		// int trials = 0;
-		// if (args.length == 2) {
-		// n = Integer.parseInt(args[0]);
-		// trials = Integer.parseInt(args[1]);
-		// }
-		//
-		// n = 20;
-		// trials = 5;
-		//
-		// PercolationStats stats = new PercolationStats(n, trials);
+		System.out.println("running with params: n=" + n + ", trials=" + trials);
+		PercolationStats stats = new PercolationStats(n, trials);
+		System.out.println("mean=" + stats.mean());
+		System.out.println("stddev=" + stats.stddev());
+		System.out.println("confidence=[" + stats.confidenceLo() + ";" + stats.confidenceHi() + "]");
 
 	}
 }

@@ -43,7 +43,6 @@ public class Percolation {
 
 	private int _size;
 	private boolean _opened[];
-
 	private UnionFind _union;
 	private int _top_idx;
 	private int _bottom_idx;
@@ -149,8 +148,7 @@ public class Percolation {
 
 	// does the system percolate?
 	public boolean percolates() {
-		boolean connected = _union.connected(_top_idx, _bottom_idx);
-		return connected;
+		return _union.connected(_top_idx, _bottom_idx);
 	}
 
 	private boolean isValidIndex(int p, int q) {
@@ -164,7 +162,6 @@ public class Percolation {
 		int y = q - 1;
 		return x * _size + y;
 	}
-
 
 	private void printGrid() {
 		int i = 0;
