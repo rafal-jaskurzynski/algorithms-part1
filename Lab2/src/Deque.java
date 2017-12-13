@@ -1,6 +1,4 @@
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 public class Deque<Item> implements Iterable<Item> {
 
@@ -107,17 +105,18 @@ public class Deque<Item> implements Iterable<Item> {
 
 		@Override
 		public boolean hasNext() {
-			return current._next != null;
+			return current != null;
 		}
 
 		@Override
 		public Item next() {
 
-			if (current._item == null) {
+			if (current == null) {
 				throw new java.util.NoSuchElementException();
 			}
 
 			Item item = current._item;
+
 			current = current._next;
 			return item;
 		}
@@ -128,46 +127,18 @@ public class Deque<Item> implements Iterable<Item> {
 		return new ListIterator();
 	}
 
-	public void print() {
-		Node node = _root;
-
-		while (node != null) {
-			System.out.print(" | " + String.valueOf(node._item));
-			node = node._next;
-		}
-
-		System.out.println(" ");
-	}
-
 	public static void main(String[] args) {
 		System.out.println("dequeue");
 
 		Deque<Integer> dq = new Deque<>();
-		System.out.println("isEmpty: " + String.valueOf(dq.isEmpty()));
-		dq.addFirst(10);
-		System.out.println("isEmpty: " + String.valueOf(dq.isEmpty()));
-		dq.addFirst(20);
-		dq.addLast(30);
-		dq.addLast(40);
-		dq.addLast(50);
 
-		System.out.println("count: " + String.valueOf(dq.size()));
-
-		for (int it : dq) {
-			System.out.println("item: " + String.valueOf(it));
+		for (int i = 0; i < 10; i++) {
+			dq.addFirst(i);
 		}
 
-		dq.print();
+		for (int i : dq) {
+			System.out.println("i=" + i);
+		}
 
-		dq.removeLast();
-		dq.removeLast();
-		dq.print();
-		dq.removeLast();
-		dq.removeLast();
-		dq.removeLast();
-
-		// System.out.println("removeFirst: " + String.valueOf(dq.removeFirst( )));
-		// System.out.println("removeFirst: " + String.valueOf(dq.removeFirst( )));
-		System.out.println("isEmpty: " + String.valueOf(dq.isEmpty()));
 	}
 }

@@ -1,7 +1,7 @@
 <project name="Lab2" basedir="." default="main">
 
    <property name="mainclass" value="Permutation" />
-   <property name="zipfile" value="permutation" />
+   <property name="zipfile" value="${ant.project.name}.zip" />
    <property name="build.dir" value="build" />
    <property name="jarfile" value="${ant.project.name}.jar" />
 
