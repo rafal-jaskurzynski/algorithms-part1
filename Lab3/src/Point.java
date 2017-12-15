@@ -14,8 +14,8 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class Point implements Comparable<Point> {
 
-	private final int x; // x-coordinate of this point
-	private final int y; // y-coordinate of this point
+	public final int x; // x-coordinate of this point
+	public final int y; // y-coordinate of this point
 	
 	public static final Comparator<Point> BY_SLOPE    = new BySlope();
 
@@ -66,7 +66,9 @@ public class Point implements Comparable<Point> {
 	 * @return the slope between this point and the specified point
 	 */
 	public double slopeTo(Point that) {
-		return (that.y - y) / (that.x - x);
+		double diff_y = (that.y - y);
+		double diff_x = (that.x - x);
+		return diff_y / diff_x;
 	}
 
 	/**
