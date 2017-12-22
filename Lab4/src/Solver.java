@@ -16,18 +16,18 @@ public class Solver {
 	private class SearchNode
 	{
 		Board _board;
-		Board _pred;
 		int _moves;
+		SearchNode _parent;
 				
-		public SearchNode( Board board, int moves, Board pred ) {
+		public SearchNode( Board board, int moves, SearchNode search_node ) {
 			_board = board;
 			_moves = moves;
-			_pred = pred;
+			_parent = search_node;
 		}
 		
 		public int priority()
 		{
-			return _board.manhattan() + _moves;
+			return _board.manhattan() + _moves; // + _board.hamming();
 		}
 		
 		public Board getBoard()
@@ -56,40 +56,87 @@ public class Solver {
 	// find a solution to the initial board (using the A* algorithm)
 	public Solver(Board initial) {
 		
+		if ( initial == null )
+		{
+			throw new IllegalArgumentException();
+		}
+		
 		_moves = 0;
-		_pq = new MinPQ<>( new NodeComparator( ) );
+		//_pq = new MinPQ<>( new NodeComparator( ) );
 		_solution = new ArrayList<>();
 		_solved = true;
 		
-		_pq.insert( new SearchNode(initial, _moves, null));
+		//_pq.insert( new SearchNode(initial, _moves, null));
 		
-		SearchNode sn = _pq.delMin();
-		_solution.add( sn.getBoard());
+//		SearchNode sn = _pq.delMin();
+//		_solution.add( initial );
+//		System.out.println( initial  );
+		
+		
+		
+		SearchNode sn = new SearchNode(initial, _moves, null);
+		
+		_pq = new MinPQ<>( new NodeComparator( ) );
+
 		
 		while ( !sn.getBoard( ).isGoal( ) )
 		{
 			_moves++;
 			
+			//System.out.println( "step: " + _moves  );
+
+
 			for ( Board nb : sn.getBoard().neighbors() )
 			{
-				if ( nb != sn._pred )
+				Board parent = ( sn._parent != null ) ? sn._parent.getBoard( ) : null; 
+				
+				if ( !nb.equals( parent ) )
 				{
-					SearchNode node = new SearchNode(nb, _moves, sn.getBoard());
+					SearchNode node = new SearchNode(nb, _moves, sn );
 					_pq.insert(node);
+					
+					//System.out.println( "neighbor:" +node.priority() + " \n"  + nb );
 				}
 			}
 			
 			sn = _pq.delMin( );
 			
-			_solution.add( sn.getBoard());
+//			System.out.println(sn.getBoard()  );
+//			System.out.println( "" );
+
 			
-			if ( _moves == 100)
+//			_solution.add( sn.getBoard());
+			
+			if ( _moves == 100000)
 			{
+				_moves = -1;
 				_solved = false;
 				break;
 			}
 
 		}
+		
+		if ( _solved )
+		{
+			// collect solutions
+			SearchNode nodes = sn;
+			
+			while( nodes != null )
+			{
+				_solution.add( nodes.getBoard() );
+				nodes = nodes._parent;
+				_moves = _solution.size() - 1;
+			}
+			
+			for(int i = 0; i < _solution.size( ) / 2; i++)
+			{
+			    Board tmp = _solution.get(i);
+			    int idx = _solution.size( ) - i - 1;
+			    _solution.set(i , _solution.get( idx ) );
+			    _solution.set(idx , tmp );
+			}
+		}
+		
 	}
 
 	// is the initial board solvable?
@@ -99,12 +146,12 @@ public class Solver {
 
 	// min number of moves to solve initial board; -1 if unsolvable
 	public int moves() {
-		return _moves++;
+		return _moves;
 	}
 
 	// sequence of boards in a shortest solution; null if unsolvable
 	public Iterable<Board> solution() {
-		return _solution;
+		return !_solution.isEmpty() ? _solution : null;
 	}
 
 	// solve a slider puzzle (given below)
@@ -129,6 +176,7 @@ public class Solver {
 		}
 		else
 		{
+			System.out.println( "File: " + args[0] );
 			// create initial board from file
 			In in = new In(args[0]);
 			n = in.readInt();

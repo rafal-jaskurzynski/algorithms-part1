@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
 
@@ -102,10 +104,15 @@ public class Board {
 
 	// a board that is obtained by exchanging any pair of blocks
 	public Board twin() {
-		for (Board b : neighbors()) {
-			return b;
-		}
-		return null;
+		Integer[] cpy = copy( _block );
+		
+		int idx_2 = Arrays.asList(_block).indexOf( 2 );
+		int idx_1 = Arrays.asList(_block).indexOf( 1 );
+
+		cpy[ idx_1 ] = 2;
+		cpy[ idx_2 ] = 1;
+		
+		return new Board( one_to_two(cpy));
 	}
 
 	// does this board equal y?
@@ -186,7 +193,7 @@ public class Board {
 
 	// string representation of this board (in the output format specified below)
 	public String toString() {
-		return String.valueOf(_n) + print(_block);
+		return String.valueOf(_n) + print(_block) + String.format("\n");
 	}
 
 	private String print(Integer[] _arg) {
@@ -197,11 +204,23 @@ public class Board {
 				s += String.format("\n");
 			}
 
-			s += String.format("%-3d", _block[i]);
+			s += String.format("%4d", _block[i]);
 		}
 		return s;
 	}
 
+//	public String toString() {
+//	    StringBuilder s = new StringBuilder();
+//	    s.append(n + "\n");
+//	    for (int i = 0; i < n; i++) {
+//	        for (int j = 0; j < n; j++) {
+//	            s.append(String.format("%2d ", tiles[i][j]));
+//	        }
+//	        s.append("\n");
+//	    }
+//	    return s.toString();
+//	}
+	
 	// unit tests (not graded)
 	public static void main(String[] args) {
 		// create initial board from file
@@ -226,10 +245,14 @@ public class Board {
 
 		Board initial = new Board(blocks);
 		StdOut.println(initial);
+		
+		StdOut.println(initial.twin());
 
-		for (Board b : initial.neighbors()) {
-			System.out.println(b);
-		}
+		
+
+//		for (Board b : initial.neighbors()) {
+//			System.out.println(b);
+//		}
 
 		System.out.println("hamming: " + initial.hamming());
 		System.out.println("manhattan: " + initial.manhattan());
