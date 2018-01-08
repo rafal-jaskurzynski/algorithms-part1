@@ -21,9 +21,11 @@ public class KdTree {
 	}
 
 	private Node _root;
+	private int _size;
 
 	// construct an empty set of points
 	public KdTree() {
+		_size = 0;
 	}
 
 	// is the set empty?
@@ -33,7 +35,7 @@ public class KdTree {
 
 	// number of points in the set
 	public int size() {
-		return _count(_root);
+		return _size; // _count(_root);
 	}
 
 	private int _count(Node n) {
@@ -48,12 +50,12 @@ public class KdTree {
 		if (p == null) {
 			throw new java.lang.IllegalArgumentException();
 		}
+		
+		_size++;
 
-		if (contains(p)) {
-			return;
-		}
-
-		// System.out.println("kd.insert( new Point2D" + p + ");");
+//		if (contains(p)) {
+//			return;
+//		}
 
 		if (_root == null) {
 			_root = new Node(p, false);
@@ -223,19 +225,6 @@ public class KdTree {
 		return best;
 	}
 
-//	public void print() {
-//		_print(_root, 0, "c");
-//	}
-//
-//	private void _print(Node n, int level, String s) {
-//		if (n == null) {
-//			return;
-//		}
-//		_print(n._left, level + 1, "l");
-//		StdOut.printf("%d | %s | %1.2f %1.2f\n", level, s, n._value.x(), n._value.y());
-//		_print(n._right, level + 1, "r");
-//	}
-
 	// unit testing of the methods (optional)
 	public static void main(String[] args) {
 
@@ -257,12 +246,12 @@ public class KdTree {
 		kd.insert(new Point2D(0.024472, 0.654508));
 		kd.insert(new Point2D(0.5, 1.0));
 
-		// kd.print();
-
 		RectHV rect = new RectHV(0.5, 0.5, 1, 1);
 		for (Point2D po : kd.range(rect)) {
 			System.out.println("p: " + po);
 		}
+		
+		System.out.println("size:" + kd.size());
 
 	}
 }
