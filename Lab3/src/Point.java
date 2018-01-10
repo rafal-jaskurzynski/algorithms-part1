@@ -14,10 +14,8 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class Point implements Comparable<Point> {
 
-	public final int x; // x-coordinate of this point
-	public final int y; // y-coordinate of this point
-	
-	public static final Comparator<Point> BY_SLOPE    = new BySlope();
+	private final int x; // x-coordinate of this point
+	private final int y; // y-coordinate of this point
 
 	/**
 	 * Initializes a new point.
@@ -66,8 +64,27 @@ public class Point implements Comparable<Point> {
 	 * @return the slope between this point and the specified point
 	 */
 	public double slopeTo(Point that) {
+
+		if (that == null) {
+			throw new java.lang.NullPointerException();
+		}
+
 		double diff_y = (that.y - y);
 		double diff_x = (that.x - x);
+
+		if (diff_x == 0 && diff_y == 0) {
+			return Double.NEGATIVE_INFINITY;
+		}
+		
+		if ( diff_y == 0 )
+		{
+			return 0;
+		}
+
+		if (diff_x == 0) {
+			return Double.POSITIVE_INFINITY;
+		}
+
 		return diff_y / diff_x;
 	}
 
@@ -98,14 +115,29 @@ public class Point implements Comparable<Point> {
 	 * @return the Comparator that defines this ordering on points
 	 */
 	public Comparator<Point> slopeOrder() {
-		/* YOUR CODE HERE */
-		return new BySlope( );
+		return new BySlope(this);
 	}
 
-	private static class BySlope implements Comparator<Point> {
+	private class BySlope implements Comparator<Point> {
+
+		private Point _p;
+
+		BySlope(Point p) {
+			_p = p;
+		}
+
 		public int compare(Point a, Point b) {
-//			return a.slopeTo( b ) < 
-			return 0;
+
+			if (a == null || b == null) {
+				throw new java.lang.NullPointerException();
+			}
+			
+			if (  _p.slopeTo(a) ==  _p.slopeTo(b) )
+			{
+				return 0;
+			}
+
+			return _p.slopeTo(a) < _p.slopeTo(b) ? -1 : 1;
 		}
 	}
 
@@ -120,4 +152,87 @@ public class Point implements Comparable<Point> {
 		/* DO NOT MODIFY */
 		return "(" + x + ", " + y + ")";
 	}
+
+	public static void main(String[] args) {
+
+		// Test 1
+		{
+			Point p = new Point(278, 46);
+			Point q = new Point(278, 180);
+
+			System.out.println("test1 " + p + ": " + q + " slope: " + p.slopeTo(q));
+
+			if (Double.POSITIVE_INFINITY == p.slopeTo(q)) {
+				System.out.println("test1 ok");
+			}
+		}
+
+		// Test 2
+		{
+			Point same = new Point(222, 89);
+
+			if (Double.NEGATIVE_INFINITY == same.slopeTo(same)) {
+				System.out.println("test2 ok");
+			}
+		}
+
+		// Test 3
+		{
+			Point p = new Point(38, 443);
+			Point q = new Point(221, 443);
+
+			System.out.println("test3 " + p + ": " + q + " slope: " + p.slopeTo(q));
+
+			if (0 == p.slopeTo(q)) {
+				System.out.println("test3 ok");
+			}
+		}
+
+		// Test 4
+		{
+			Point p = new Point(376, 247);
+			Point q = new Point(376, 370);
+
+			System.out.println("test4 " + p + ": " + q + " slope: " + p.slopeTo(q));
+
+			if (Double.POSITIVE_INFINITY == p.slopeTo(q)) {
+				System.out.println("test4 ok");
+			}
+		}
+
+		// Test 5
+		{
+			Point p = new Point(4, 7);
+			Point q = new Point(4, 0);
+
+			System.out.println("test5 " + p + ": " + q + " slope: " + p.slopeTo(q));
+
+			if (Double.POSITIVE_INFINITY == p.slopeTo(q)) {
+				System.out.println("test5 ok");
+			}
+		}
+		
+		// Test 6
+		{
+			Point p = new Point(259, 182);
+			Point q = new Point(116, 182);
+
+			System.out.println("test6 " + p + ": " + q + " slope: " + p.slopeTo(q));
+
+			if (0 == p.slopeTo(q)) {
+				System.out.println("test6 ok");
+			}
+		}
+
+		{
+			Point p = new Point(13956, 144);
+			Point q = new Point(29826, 25868);
+			Point r = new Point(11186, 21011);
+
+			System.out.println("compare 1 = " + p.slopeOrder().compare(q, r));
+
+		}
+
+	}
+
 }
